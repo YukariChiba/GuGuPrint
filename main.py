@@ -1,16 +1,11 @@
-import urllib
-
-from io import StringIO, BytesIO
+from io import BytesIO
 import math
-import numpy as np
 from telegram import ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
-from PIL import Image, ImageOps
-from telegram.ext import RegexHandler
+from PIL import Image
 from telegram.ext import Updater, CommandHandler
-import requests.packages.urllib3.contrib.pyopenssl
 import logging
 import base64
 import requests
@@ -93,7 +88,7 @@ def transformlng(lng, lat):
 
 
 def out_of_china(lng, lat):
-    return not (lng > 73.66 and lng < 135.05 and lat > 3.86 and lat < 53.55)
+    return not (73.66 < lng < 135.05 and 3.86 < lat < 53.55)
 
 
 def mars(lng, lat):
@@ -110,7 +105,7 @@ def mars(lng, lat):
     return [mglng, mglat]
 
 
-def guguprpic(pruser, prpic):
+def guguprpic(pruser, prpic_it):
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     payload = {'ak': '--key--',
                'timestamp': tstamp,
@@ -124,20 +119,16 @@ def guguprpic(pruser, prpic):
         outdata = outdata.replace("%FROM_TIME%", tstamp)
         outdata = base64.b64encode(outdata.encode(encoding='gbk', errors='ignore')).decode()
         outdata_e = base64.b64encode(outpictpl_end.encode(encoding='gbk', errors='ignore')).decode()
-        # outdata = outdata.replace("%CONTENT%", prpic.decode())
         payload2 = {'ak': '--key--',
                     'timestamp': tstamp,
                     'memobirdID': '--key--',
                     'userID': rjson['showapi_userid'],
-                    'printcontent': 'T:' + outdata + '|P:' + prpic.decode() + '|T:' + outdata_e
+                    'printcontent': 'T:' + outdata + '|P:' + prpic_it.decode() + '|T:' + outdata_e
                     }
-        r2 = requests.post("http://open.memobird.cn/home/printpaper", data=payload2)
-        # print('T:' + outdata + '|P:' + prpic.decode() + '|T:' + outdata_e)
-        # print(rjson['showapi_userid'])
-        # print(r2.text.encode("gb2312", "ignore"))
+        requests.post("http://open.memobird.cn/home/printpaper", data=payload2)
 
 
-def guguprloc(pruser, prloc, prele):
+def guguprloc(pruser, prloc_it, prele):
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     payload = {'ak': '--key--',
                'timestamp': tstamp,
@@ -151,9 +142,9 @@ def guguprloc(pruser, prloc, prele):
         outdata = outdata.replace("%FROM_TIME%", tstamp)
         outdata = outdata.replace("%ELE%", str(round(prele['elevation'], 2)))
         outdata = outdata.replace("%RES%", str(round(prele['resolution'], 2)))
-        outdata = outdata.replace("%LAT%", str(round(prloc[0]['geometry']['location']['lat'], 5)))
-        outdata = outdata.replace("%LON%", str(round(prloc[0]['geometry']['location']['lng'], 5)))
-        outdata = outdata.replace("%LOC%", prloc[0]['formatted_address'])
+        outdata = outdata.replace("%LAT%", str(round(prloc_it[0]['geometry']['location']['lat'], 5)))
+        outdata = outdata.replace("%LON%", str(round(prloc_it[0]['geometry']['location']['lng'], 5)))
+        outdata = outdata.replace("%LOC%", prloc_it[0]['formatted_address'])
         outdata = outdata.replace(u'\xa0 ', u' ')
         outdata = base64.b64encode(outdata.encode(encoding='gbk', errors='ignore')).decode()
         payload2 = {'ak': '--key--',
@@ -162,10 +153,10 @@ def guguprloc(pruser, prloc, prele):
                     'userID': rjson['showapi_userid'],
                     'printcontent': 'T:' + outdata
                     }
-        r2 = requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
+        requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
 
 
-def guguprtxt(pruser, prtext, forward=False, forwarder=''):
+def guguprtxt(pruser, prtext, forward=False):
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     payload = {'ak': '--key--',
                'timestamp': tstamp,
@@ -190,10 +181,10 @@ def guguprtxt(pruser, prtext, forward=False, forwarder=''):
                     'userID': rjson['showapi_userid'],
                     'printcontent': 'T:' + outdata
                     }
-        r2 = requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
+        requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
 
 
-def guguprcon(pruser, prcon):
+def guguprcon(pruser, prcon_it):
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     payload = {'ak': '--key--',
                'timestamp': tstamp,
@@ -205,8 +196,8 @@ def guguprcon(pruser, prcon):
     if rjson['showapi_res_error'] == 'ok':
         outdata = outcontpl.replace("%FROM_USER%", pruser)
         outdata = outdata.replace("%FROM_TIME%", tstamp)
-        outdata = outdata.replace("%NAME%", prcon.first_name + prcon.last_name)
-        outdata = outdata.replace("%PHONE%", prcon.phone_number)
+        outdata = outdata.replace("%NAME%", prcon_it.first_name + prcon_it.last_name)
+        outdata = outdata.replace("%PHONE%", prcon_it.phone_number)
         outdata = outdata.replace(u'\xa0 ', u' ')
         outdata = base64.b64encode(outdata.encode(encoding='gbk', errors='ignore')).decode()
         payload2 = {'ak': '--key--',
@@ -215,10 +206,10 @@ def guguprcon(pruser, prcon):
                     'userID': rjson['showapi_userid'],
                     'printcontent': 'T:' + outdata
                     }
-        r2 = requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
+        requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
 
 
-def start(bot, update):
+def start(update):
     user = update.message.from_user
     if user.username not in whitelist:
         update.message.reply_text("Input user password:")
@@ -228,10 +219,8 @@ def start(bot, update):
         return PRTXT
 
 
-# def pwd(bot, update, args):
-def pwd(bot, update):
-    # logger.info("A request with pwd" + args[0])
-    user = update.message.from_user
+def pwd(update):
+    # user = update.message.from_user
     # if args[0] == '321123':
     if update.message.text == '31415926535':
         update.message.reply_text("Input text to print:")
@@ -241,15 +230,15 @@ def pwd(bot, update):
         return ConversationHandler.END
 
 
-def prfor(bot, update):
+def prfor(update):
     user = update.message.from_user
     logger.info(user.username + ":[Forward:" + update.message.forward_from.username + "]")
-    guguprtxt(user.username + "\nFORWARD: @" + update.message.forward_from.username, update.message.text, forward=True, forwarder=update.message.forward_from.username)
+    guguprtxt(user.username + "\nFORWARD: @" + update.message.forward_from.username, update.message.text, forward=True)
     update.message.reply_text('Done!')
     return ConversationHandler.END
 
 
-def prtxt(bot, update):
+def prtxt(update):
     user = update.message.from_user
     logger.info(user.username + ":[Text]")
     guguprtxt(user.username, update.message.text)
@@ -257,27 +246,27 @@ def prtxt(bot, update):
     return ConversationHandler.END
 
 
-def prloc(bot, update):
+def prloc(update):
     user = update.message.from_user
     l1 = update.message.location.longitude
     l2 = update.message.location.latitude
     convert = mars(l1, l2)
     l1 = convert[0]
     l2 = convert[1]
-    # print(str(l2) + "," + str(l1))
     logger.info(user.username + ":Position[" + str(l2) + "," + str(l1) + "]")
-    r = requests.get("https://maps.googleapis.com/maps/api/geocode/json?language=zh-CN&latlng=" + str(l2) + "," + str(l1) + "&key=" + ggeokey)
+    r = requests.get("https://maps.googleapis.com/maps/api/geocode/json?language=zh-CN&latlng="
+                     + str(l2) + "," + str(l1) + "&key=" + ggeokey)
     rjson = r.json()
-    r2 = requests.get("https://maps.googleapis.com/maps/api/elevation/json?locations=" + str(l2) + "," + str(l1) + "&key=" + gelekey)
+    r2 = requests.get("https://maps.googleapis.com/maps/api/elevation/json?locations="
+                      + str(l2) + "," + str(l1) + "&key=" + gelekey)
     rjson2 = r2.json()
-    # print(r2.text)
     guguprloc(user.username, rjson['results'], rjson2['results'][0])
     update.message.reply_text('Done!')
     return ConversationHandler.END
 
 
 def prdoc(bot, update):
-    IMAGE_MAX_WIDTH = 384
+    image_max_width = 384
     user = update.message.from_user
     logger.info(user.username + ":[pic]")
     r = requests.get(bot.getFile(update.message.document.file_id).file_path)
@@ -286,8 +275,7 @@ def prdoc(bot, update):
     image = Image.open("tmp.jpg")
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
     width, height = image.size
-    # if width > IMAGE_MAX_WIDTH:
-    image = image.resize((IMAGE_MAX_WIDTH, height * 384 // width), Image.ANTIALIAS)
+    image = image.resize((image_max_width, height * 384 // width), Image.ANTIALIAS)
     image = image.convert("1")
     p = BytesIO()
     image.save(p, "BMP")
@@ -298,7 +286,7 @@ def prdoc(bot, update):
 
 
 def prpic(bot, update):
-    IMAGE_MAX_WIDTH = 384
+    image_max_width = 384
     user = update.message.from_user
     logger.info(user.username + ":[pic]")
     r = requests.get(bot.getFile(update.message.photo[0].file_id).file_path)
@@ -307,8 +295,7 @@ def prpic(bot, update):
     image = Image.open("tmp.jpg")
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
     width, height = image.size
-    # if width > IMAGE_MAX_WIDTH:
-    image = image.resize((IMAGE_MAX_WIDTH, height * 384 // width), Image.ANTIALIAS)
+    image = image.resize((image_max_width, height * 384 // width), Image.ANTIALIAS)
     image = image.convert("1")
     p = BytesIO()
     image.save(p, "BMP")
@@ -318,7 +305,7 @@ def prpic(bot, update):
     return ConversationHandler.END
 
 
-def praqi(bot, update):
+def praqi(update):
     user = update.message.from_user
     logger.info(user.username + ":[aqi]")
     city = 'chengdu'
@@ -339,6 +326,8 @@ def praqi(bot, update):
              '  <-----END TRANSMISSION----->'
     r = requests.post("http://open.memobird.cn/home/setuserbind", params=payload)
     rjson = r.json()
+    level = ''
+    r1j = dict()
     if rjson['showapi_res_error'] == 'ok':
         r1 = requests.get("https://api.waqi.info/feed/" + city + "/?token=--key--")
         r1j = r1.json()
@@ -373,13 +362,12 @@ def praqi(bot, update):
                 'userID': rjson['showapi_userid'],
                 'printcontent': 'T:' + outdata
                 }
-    # print(outtpl)
-    r2 = requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
+    requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
     update.message.reply_text('Done!')
     return ConversationHandler.END
 
 
-def prcon(bot, update):
+def prcon(update):
     user = update.message.from_user
     logger.info(user.username + ":" + update.message.contact.phone_number)
     guguprcon(user.username, update.message.contact)
@@ -387,17 +375,17 @@ def prcon(bot, update):
     return ConversationHandler.END
 
 
-def cancel(bot, update):
-    user = update.message.from_user
+def cancel(update):
+    # user = update.message.from_user
     update.message.reply_text('Good bye.',
                               reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
+
 
 pr = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
 
         states={
-            # PWD: [CommandHandler('pwd', pwd, pass_args=True)],
             PWD: [MessageHandler(Filters.text, pwd)],
             PRTXT: [MessageHandler(Filters.forwarded & Filters.text, prfor),
                     MessageHandler(Filters.text, prtxt),
