@@ -1,3 +1,4 @@
 # GuGuPrint
-A Telegram bot for GuGu Printer
-And...this project will be restructed soon...
+A Telegram bot for GuGu Printer. 
+The project has been restructed. 
+Please fill settings.py before running.
