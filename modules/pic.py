@@ -5,6 +5,7 @@ from PIL import Image
 from msgtpl import *
 from api import *
 import logging
+import lang
 from telegram.ext import ConversationHandler
 
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ def prpic(bot, update):
         guguprpic(pr_usrname, content, update.message.caption)
     else:
         guguprpic(pr_usrname, content)
-    update.message.reply_text('Done!\n[消息已呈递]\n[通讯链路终结]')
+    update.message.reply_text(lang.print_success)
     return ConversationHandler.END
 
 

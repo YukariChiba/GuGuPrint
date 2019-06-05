@@ -4,6 +4,7 @@ import logging
 from msgtpl import *
 from api import *
 from telegram.ext import ConversationHandler
+import lang
 
 logger = logging.getLogger(__name__)
 
@@ -29,5 +30,5 @@ def prtxt(bot, update):
     if update.message.forward_from is not None:
         pr_usrname = pr_usrname + "\nFORWARD: @" + update.message.forward_from.username
     guguprtxt(pr_usrname, update.message.text)
-    update.message.reply_text('Done!\n[消息已呈递]\n[通讯链路终结]')
+    update.message.reply_text(lang.print_success)
     return ConversationHandler.END

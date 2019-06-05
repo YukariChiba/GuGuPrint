@@ -5,6 +5,7 @@ from msgtpl import *
 from geo_calc import *
 from api import *
 from telegram.ext import ConversationHandler
+import lang
 
 logger = logging.getLogger(__name__)
 
@@ -38,5 +39,5 @@ def prloc(bot, update):
                       + str(l2) + "," + str(l1) + "&key=" + gelekey)
     rjson2 = r2.json()
     guguprloc(user.username, rjson['results'], rjson2['results'][0])
-    update.message.reply_text('Done!')
+    update.message.reply_text(lang.print_success)
     return ConversationHandler.END

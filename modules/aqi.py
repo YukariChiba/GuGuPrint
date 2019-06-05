@@ -3,6 +3,7 @@ import base64
 from telegram.ext import ConversationHandler
 import logging
 from api import *
+import lang
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,6 @@ def praqi(bot, update):
     aqitpl = aqitpl.replace('%time%', str(r1j['data']['time']['s']))
     outdata = base64.b64encode(aqitpl.encode(encoding='gbk')).decode()
     gu_req('Test', tstamp, 'T:' + outdata)
-    update.message.reply_text('Done!')
+    update.message.reply_text(lang.print_success)
     return ConversationHandler.END
 

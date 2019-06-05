@@ -1,11 +1,10 @@
-# -*- coding:utf-8 -*-
-
 import base64
 import time
 import logging
 from msgtpl import *
 from telegram.ext import ConversationHandler
 from api import *
+import lang
 
 logger = logging.getLogger(__name__)
 
@@ -28,5 +27,5 @@ def prcon(bot, update):
     user = update.message.from_user
     logger.info(user.username + ":" + update.message.contact.phone_number)
     guguprcon(user.username, update.message.contact)
-    update.message.reply_text('Done!\n[消息已呈递]\n[通讯链路终结]')
+    update.message.reply_text(lang.print_success)
     return ConversationHandler.END

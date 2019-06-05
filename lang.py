@@ -15,4 +15,6 @@ not_in_time_range = comm_start + "拒绝访问:不在访问授权时间列表内
 
 provide_data = comm_start + "请提供需要传输的数据: "
 
-admin_print = comm_start + admin_auth + "欢迎你，" + admin_name + "\n" + provide_data
+admin_print = comm_start + admin_auth + "欢迎你，" + admin_name + "\n" + "请提供需要传输的数据: "
+
+print_success = "Done!\n[消息已呈递]\n" + comm_end
