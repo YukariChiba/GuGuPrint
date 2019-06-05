@@ -35,7 +35,7 @@ def prstk(bot, update):
     image.save(p, "BMP")
     content = base64.b64encode(p.getvalue())
     pic.guguprpic(user.username, content,
-                  prtxt_it="FROM STICKER PACK: \n[" + update.message.sticker.set_name + "]",
-                  type=1)
+                  prtxt_it="FROM STICKER PACK: \n@" + update.message.sticker.set_name,
+                  pictype=1)
     update.message.reply_text(lang.print_success)
     return ConversationHandler.END
