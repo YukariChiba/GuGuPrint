@@ -4,6 +4,7 @@ from telegram.ext import ConversationHandler
 import logging
 from api import *
 import lang
+import settings
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ def praqi(bot, update):
              '  <-----END TRANSMISSION----->'
     level = ''
     r1j = dict()
-    r1 = requests.get("https://api.waqi.info/feed/" + aqi_city + "/?token=--key--")
+    r1 = requests.get("https://api.waqi.info/feed/" + aqi_city + "/?token=" + settings.aqi_key)
     r1j = r1.json()
     if r1j['data']['aqi'] >= 300:
         level = 'Hazardous'
