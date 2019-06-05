@@ -9,9 +9,10 @@ def gu_req(pruser, tstamp, content):
                 'userID': bind_user(pruser, tstamp),
                 'printcontent': content
                 }
-    r = requests.post("http://open.memobird.cn/home/printpaper", params=payload2)
+    r = requests.post("http://open.memobird.cn/home/printpaper", headers={'Content-Type': 'application/json'}, data=json.dumps(payload2))
+    r.encoding='gb2312'
     rjson = r.json()
-    with open('print_req.json', 'w') as f:    
+    with open('print_req.json', 'w') as f:
         json.dump(rjson, f)
     return rjson['showapi_res_error']
 
@@ -26,5 +27,4 @@ def bind_user(pruser, tstamp):
     rjson = r.json()
     with open('bind_req.json', 'w') as f:
         json.dump(rjson, f)
-    print(r)
     return rjson['showapi_userid']

@@ -4,8 +4,9 @@ from telegram.ext import MessageHandler
 from telegram.ext import Updater, CommandHandler
 from telegram.ext import ConversationHandler
 import logging
+import lang
 import time
-from modules import aqi, contact, forward, loc, pic, text, doc
+from modules import aqi, contact, loc, pic, text, doc
 from settings import *
 
 
@@ -22,27 +23,32 @@ def start(bot, update):
     user = update.message.from_user
     if user.username not in whitelist:
         if not in_time_range(open_time):
-            update.message.reply_text("[通讯链路开启]\n拒绝访问:不在访问授权时间\列表内。\n公共授权时间:\n 8:00-12:30, 14:00-23:00\n[通讯链路已终结]")
+            update.message.reply_text(lang.not_in_time_range)
             return ConversationHandler.END
         else:
-            update.message.reply_text("[传输链路开启]\n请提供需要传输的数据:")
+            update.message.reply_text(lang.provide_data)
             return PRTXT
     else:
-        update.message.reply_text("Welcome, my master.\nInput text to print:")
+        update.message.reply_text(lang.admin_print)
         return PRTXT
 
 
 def pwd(bot, update):
     if update.message.text == pwd:
-        update.message.reply_text("Input text to print:")
+        update.message.reply_text(lang.provide_data)
         return PRTXT
     else:
-        update.message.reply_text("Wrong password")
+        update.message.reply_text(lang.access_denied)
         return ConversationHandler.END
 
 
+def none(bot, update):
+    update.message.reply_text(lang.usage_failed)
+    return ConversationHandler.END
+
+
 def cancel(bot, update):
-    update.message.reply_text('Good bye.\n[通讯链路已终结]',
+    update.message.reply_text(lang.comm_end,
                               reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
@@ -59,12 +65,14 @@ def in_time_range(ranges):
 
 
 pr = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
+        entry_points=[
+            CommandHandler('start', start),
+            MessageHandler(Filters.all, none)
+        ],
 
         states={
             PEND: [MessageHandler(Filters.text, pwd)],
-            PRTXT: [MessageHandler(Filters.forwarded & Filters.text, forward.prfor),
-                    MessageHandler(Filters.text, text.prtxt),
+            PRTXT: [MessageHandler(Filters.text, text.prtxt),
                     MessageHandler(Filters.document, doc.prdoc),
                     MessageHandler(Filters.photo, pic.prpic),
                     MessageHandler(Filters.location, loc.prloc),
@@ -75,5 +83,6 @@ pr = ConversationHandler(
     )
 
 updater.dispatcher.add_handler(pr)
+logging.log(logging.INFO, "System started successfully.")
 updater.start_polling()
 updater.idle()

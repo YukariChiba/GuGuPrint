@@ -1,0 +1,9 @@
+[Unit]
+Description=GuGuPrint Bot
+
+[Service]
+Type=simple
+ExecStart=/usr/python-script/guguprint/main.py
+
+[Install]
+WantedBy=multi-user.target

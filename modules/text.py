@@ -25,6 +25,9 @@ def guguprtxt(pruser, prtext, forward=False):
 def prtxt(bot, update):
     user = update.message.from_user
     logger.info(user.username + ":[Text]")
-    guguprtxt(user.username, update.message.text)
+    pr_usrname = user.username
+    if update.message.forward_from is not None:
+        pr_usrname = pr_usrname + "\nFORWARD: @" + update.message.forward_from.username
+    guguprtxt(pr_usrname, update.message.text)
     update.message.reply_text('Done!\n[消息已呈递]\n[通讯链路终结]')
     return ConversationHandler.END

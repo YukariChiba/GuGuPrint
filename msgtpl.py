@@ -6,7 +6,7 @@ outcontpl = tr_begin + \
          'TIME: %FROM_TIME%\n' \
          '     -------CONTACT-------\n' \
          'NAME: %NAME%\n' \
-         'PHONE: %PHONE%\n' \
+         '%DATA%' \
          + tr_end
 
 
