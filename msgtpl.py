@@ -31,5 +31,5 @@ outtpl = tr_begin + \
 outpictpl = tr_begin + \
          'FROM: @%FROM_USER%\n' \
          'TIME: %FROM_TIME%\n' \
-         '     ------PICTURE------\n'
+         '     ------%PICTURE%------\n'
 outpictpl_end = tr_end

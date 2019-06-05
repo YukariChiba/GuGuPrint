@@ -37,11 +37,15 @@ def prpic(bot, update):
     return ConversationHandler.END
 
 
-def guguprpic(pruser, prpic_it, prtxt_it=None):
+def guguprpic(pruser, prpic_it, prtxt_it=None, type=0):
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     outdata = outpictpl.replace("%FROM_USER%", pruser)
     outdata = outdata.replace("%FROM_TIME%", tstamp)
     outdata = base64.b64encode(outdata.encode(encoding='gbk', errors='ignore')).decode()
+    if type is 0:
+        outdata = outdata.replace("%PICTURE%", "PICTURE")
+    elif type is 1:
+        outdata = outdata.replace("%PICTURE%", "STICKER")
     if prtxt_it is not None:
         outdata_e = base64.b64encode((prtxt_it + "\n" + outpictpl_end).encode(encoding='gbk', errors='ignore')).decode()
     else:

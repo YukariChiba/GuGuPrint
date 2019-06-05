@@ -6,7 +6,7 @@ from telegram.ext import ConversationHandler
 import logging
 import lang
 import time
-from modules import aqi, contact, loc, pic, text, doc
+from modules import aqi, contact, loc, pic, text, doc, sticker
 from settings import *
 
 
@@ -77,6 +77,7 @@ pr = ConversationHandler(
                     MessageHandler(Filters.photo, pic.prpic),
                     MessageHandler(Filters.location, loc.prloc),
                     MessageHandler(Filters.contact, contact.prcon),
+                    MessageHandler(Filters.sticker, sticker.prstk),
                     CommandHandler('aqi', aqi.praqi)]
         },
         fallbacks=[CommandHandler('cancel', cancel)]
