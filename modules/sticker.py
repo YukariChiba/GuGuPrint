@@ -16,8 +16,17 @@ def prstk(bot, update):
     logger.info(user.username + ":[sticker]")
     r = requests.get(bot.getFile(update.message.sticker.file_id).file_path)
     rpic = r.content
-    open("tmp.jpg", 'wb').write(rpic)
-    image = Image.open("tmp.jpg")
+    open("tmp.png", 'wb').write(rpic)
+
+    png = Image.open("tmp.png")
+    png.load()
+
+    if len(png.split()) is 4:
+        image = Image.new("RGB", png.size, (255, 255, 255))
+        image.paste(png, mask=png.split()[3])
+    else:
+        image = png
+
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
     width, height = image.size
     image = image.resize((image_max_width, height * 384 // width), Image.ANTIALIAS)
