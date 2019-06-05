@@ -17,10 +17,10 @@ def praqi(bot, update):
              'FROM: @%FROM_USER%\n' \
              'TIME: %FROM_TIME%\n' \
              '     ---------AQI---------\n' \
-             'TIME£º%time%\n' \
-             'CITY£º%city%  AQI£º%aqi%\n' \
-             'LVL£º%level%\n' \
-             'PM25£º%pm25%   PM10£º%pm10%\n' \
+             'TIME:%time%\n' \
+             'CITY:%city%  AQI:%aqi%\n' \
+             'LVL:%level%\n' \
+             'PM25:%pm25%   PM10:%pm10%\n' \
              '  <-----END TRANSMISSION----->'
     level = ''
     r1j = dict()
