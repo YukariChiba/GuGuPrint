@@ -3,6 +3,7 @@ Description=GuGuPrint Bot
 
 [Service]
 Type=simple
+WorkingDirectory=/usr/python-script/guguprint
 ExecStart=/usr/python-script/guguprint/main.py
 
 [Install]
