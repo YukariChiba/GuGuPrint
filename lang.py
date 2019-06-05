@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 comm_start = "[通讯链路开启]\n"
 
 comm_end = "[通讯链路已终结]"
