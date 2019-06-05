@@ -4,6 +4,8 @@ gugu_ak = ''
 gugu_id = ''
 tg_tk = ''
 
+aqi_key = ''
+
 api_loc = "http://open.memobird.cn/home/printpaper"
 pwd = 'yourpassword'
 
