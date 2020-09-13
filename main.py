@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from telegram import ReplyKeyboardRemove
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
@@ -72,7 +74,7 @@ pr = ConversationHandler(
 
         states={
             PEND: [MessageHandler(Filters.text, pwd)],
-            PRTXT: [MessageHandler(Filters.text, text.prtxt),
+            PRTXT: [MessageHandler(Filters.text & (~Filters.command), text.prtxt),
                     MessageHandler(Filters.document, doc.prdoc),
                     MessageHandler(Filters.photo, pic.prpic),
                     MessageHandler(Filters.location, loc.prloc),

@@ -3,8 +3,8 @@ Description=GuGuPrint Bot
 
 [Service]
 Type=simple
-WorkingDirectory=/usr/python-script/guguprint
-ExecStart=/usr/python-script/guguprint/main.py
+WorkingDirectory=/opt/GuGuPrint
+ExecStart=/opt/GuGuPrint/main.py
 
 [Install]
 WantedBy=multi-user.target
