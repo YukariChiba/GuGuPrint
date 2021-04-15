@@ -7,11 +7,13 @@ from api import *
 import logging
 import lang
 from telegram.ext import ConversationHandler
+from telegram.ext import MessageHandler
+from telegram.ext import Filters
 
 logger = logging.getLogger(__name__)
 
 
-def prpic(bot, update):
+def start(update, context):
     image_max_width = 384
     user = update.message.from_user
     logger.info(user.username + ":[pic]")
@@ -41,9 +43,9 @@ def guguprpic(pruser, prpic_it, prtxt_it=None, pictype=0):
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     outdata = outpictpl.replace("%FROM_USER%", pruser)
     outdata = outdata.replace("%FROM_TIME%", tstamp)
-    if pictype is 0:
+    if pictype == 0:
         outdata = outdata.replace("%PICTURE%", "PICTURE")
-    elif pictype is 1:
+    elif pictype == 1:
         outdata = outdata.replace("%PICTURE%", "STICKER")
     outdata = base64.b64encode(outdata.encode(encoding='gbk', errors='ignore')).decode()
     if prtxt_it is not None:
@@ -51,3 +53,5 @@ def guguprpic(pruser, prpic_it, prtxt_it=None, pictype=0):
     else:
         outdata_e = base64.b64encode(outpictpl_end.encode(encoding='gbk', errors='ignore')).decode()
     gu_req(pruser, tstamp, 'T:' + outdata + '|P:' + prpic_it.decode() + '|T:' + outdata_e)
+
+handler = MessageHandler(Filters.photo, start)

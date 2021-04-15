@@ -6,11 +6,13 @@ from PIL import Image
 import logging
 from telegram.ext import ConversationHandler
 import lang
+from telegram.ext import MessageHandler
+from telegram.ext import Filters
 
 logger = logging.getLogger(__name__)
 
 
-def prdoc(bot, update):
+def start(update, context):
     image_max_width = 384
     user = update.message.from_user
     logger.info(user.username + ":[pic]")
@@ -28,3 +30,5 @@ def prdoc(bot, update):
     pic.guguprpic(user.username, content)
     update.message.reply_text(lang.print_success)
     return ConversationHandler.END
+
+handler = MessageHandler(Filters.document, start)

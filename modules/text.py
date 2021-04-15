@@ -4,7 +4,9 @@ import logging
 from msgtpl import *
 from api import *
 from telegram.ext import ConversationHandler
+from telegram.ext import MessageHandler
 import lang
+from telegram.ext import Filters
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +25,7 @@ def guguprtxt(pruser, prtext, forward=False):
     gu_req(pruser, tstamp, 'T:' + outdata)
 
 
-def prtxt(bot, update):
+def start(update, context):
     user = update.message.from_user
     logger.info(user.username + ":[Text]")
     pr_usrname = user.username
@@ -32,3 +34,5 @@ def prtxt(bot, update):
     guguprtxt(pr_usrname, update.message.text)
     update.message.reply_text(lang.print_success)
     return ConversationHandler.END
+
+handler = MessageHandler(Filters.text & (~Filters.command), start)

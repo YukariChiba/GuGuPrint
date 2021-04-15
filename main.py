@@ -8,7 +8,7 @@ from telegram.ext import ConversationHandler
 import logging
 import lang
 import time
-from modules import aqi, contact, loc, pic, text, doc, sticker
+import modules as bot_modules
 from settings import *
 
 
@@ -21,7 +21,7 @@ updater = Updater(tg_tk)
 PEND, PRTXT = range(2)
 
 
-def start(bot, update):
+def start(update, context):
     user = update.message.from_user
     if user.username not in whitelist:
         if not in_time_range(open_time):
@@ -65,27 +65,27 @@ def in_time_range(ranges):
             return True
     return False
 
+def main():
+    handlers = []
+    for plugin in bot_modules.__all__:
+        handlers.append(plugin.handler)
+    pr = ConversationHandler(
+            entry_points=[
+                CommandHandler('start', start),
+                MessageHandler(Filters.all, none)
+            ],
 
-pr = ConversationHandler(
-        entry_points=[
-            CommandHandler('start', start),
-            MessageHandler(Filters.all, none)
-        ],
+            states={
+                PEND: [MessageHandler(Filters.text, pwd)],
+                PRTXT: handlers
+            },
+            fallbacks=[CommandHandler('cancel', cancel)]
+        )
 
-        states={
-            PEND: [MessageHandler(Filters.text, pwd)],
-            PRTXT: [MessageHandler(Filters.text & (~Filters.command), text.prtxt),
-                    MessageHandler(Filters.document, doc.prdoc),
-                    MessageHandler(Filters.photo, pic.prpic),
-                    MessageHandler(Filters.location, loc.prloc),
-                    MessageHandler(Filters.contact, contact.prcon),
-                    MessageHandler(Filters.sticker, sticker.prstk),
-                    CommandHandler('aqi', aqi.praqi)]
-        },
-        fallbacks=[CommandHandler('cancel', cancel)]
-    )
+    updater.dispatcher.add_handler(pr)
+    logging.log(logging.INFO, "System started successfully.")
+    updater.start_polling()
+    updater.idle()
 
-updater.dispatcher.add_handler(pr)
-logging.log(logging.INFO, "System started successfully.")
-updater.start_polling()
-updater.idle()
+if __name__ == "__main__":
+    main()

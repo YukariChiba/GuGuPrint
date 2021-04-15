@@ -6,22 +6,24 @@ from PIL import Image
 import logging
 from telegram.ext import ConversationHandler
 import lang
+from telegram.ext import MessageHandler
+from telegram.ext import Filters
 
 logger = logging.getLogger(__name__)
 
 
-def prstk(bot, update):
+def start(update, context):
     image_max_width = 384
     user = update.message.from_user
     logger.info(user.username + ":[sticker]")
-    r = requests.get(bot.getFile(update.message.sticker.file_id).file_path)
+    r = requests.get(context.bot.getFile(update.message.sticker.file_id).file_path)
     rpic = r.content
     open("tmp.png", 'wb').write(rpic)
 
     png = Image.open("tmp.png")
     png.load()
 
-    if len(png.split()) is 4:
+    if len(png.split()) == 4:
         image = Image.new("RGB", png.size, (255, 255, 255))
         image.paste(png, mask=png.split()[3])
     else:
@@ -39,3 +41,5 @@ def prstk(bot, update):
                   pictype=1)
     update.message.reply_text(lang.print_success)
     return ConversationHandler.END
+
+handler = MessageHandler(Filters.sticker, start)

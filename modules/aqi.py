@@ -5,13 +5,14 @@ import logging
 from api import *
 import lang
 import settings
+from telegram.ext import CommandHandler
 
 logger = logging.getLogger(__name__)
 
 aqi_city = 'chengdu'
 
 
-def praqi(bot, update):
+def start(update, context):
     user = update.message.from_user
     logger.info(user.username + ":[aqi]")
     tstamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -57,3 +58,4 @@ def praqi(bot, update):
     update.message.reply_text(lang.print_success)
     return ConversationHandler.END
 
+handler = CommandHandler('aqi', start)

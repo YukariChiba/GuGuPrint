@@ -6,6 +6,8 @@ from geo_calc import *
 from api import *
 from telegram.ext import ConversationHandler
 import lang
+from telegram.ext import MessageHandler
+from telegram.ext import Filters
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +26,7 @@ def guguprloc(pruser, prloc_it, prele):
     gu_req(pruser, tstamp, 'T:' + outdata)
 
 
-def prloc(bot, update):
+def start(update, context):
     user = update.message.from_user
     l1 = update.message.location.longitude
     l2 = update.message.location.latitude
@@ -41,3 +43,6 @@ def prloc(bot, update):
     guguprloc(user.username, rjson['results'], rjson2['results'][0])
     update.message.reply_text(lang.print_success)
     return ConversationHandler.END
+
+
+handler = MessageHandler(Filters.location, start)
