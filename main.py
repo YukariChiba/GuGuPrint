@@ -24,7 +24,7 @@ PEND, PRTXT = range(2)
 def start(update, context):
     user = update.message.from_user
     if user.username not in whitelist:
-        if not in_time_range(open_time):
+        if not in_time_range(open_time) and open_time_enabled == True:
             update.message.reply_text(lang.not_in_time_range)
             return ConversationHandler.END
         else:
@@ -35,7 +35,7 @@ def start(update, context):
         return PRTXT
 
 
-def pwd(bot, update):
+def pwd(update, context):
     if update.message.text == pwd:
         update.message.reply_text(lang.provide_data)
         return PRTXT
@@ -44,12 +44,12 @@ def pwd(bot, update):
         return ConversationHandler.END
 
 
-def none(bot, update):
+def none(update, context):
     update.message.reply_text(lang.usage_failed)
     return ConversationHandler.END
 
 
-def cancel(bot, update):
+def cancel(update, context):
     update.message.reply_text(lang.comm_end,
                               reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
