@@ -17,7 +17,7 @@ def start(update, context):
     image_max_width = 384
     user = update.message.from_user
     logger.info(user.username + ":[pic]")
-    r = requests.get(update.bot.getFile(update.message.photo[0].file_id).file_path)
+    r = requests.get(context.bot.getFile(update.message.photo[0].file_id).file_path)
     rpic = r.content
     open("tmp.jpg", 'wb').write(rpic)
     image = Image.open("tmp.jpg")
