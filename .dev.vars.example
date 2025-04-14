@@ -1,0 +1,4 @@
+ENV_GUGU_ID=string
+ENV_GUGU_AK=string
+ENV_BOT_SECRET=string
+ENV_BOT_TOKEN=string

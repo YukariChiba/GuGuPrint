@@ -1,18 +1,22 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { registerWebhook, unRegisterWebhook } from './api/webhook';
+import router from './router';
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+		const url = new URL(request.url);
+		const pathname = url.pathname;
+		switch (pathname) {
+			case '/endpoint':
+				return router(request, ctx);
+
+			case '/registerWebhook':
+				return registerWebhook(url, '/endpoint');
+
+			case '/unRegisterWebhook':
+				return unRegisterWebhook();
+
+			default:
+				return new Response('No handler for this request');
+		}
 	},
 } satisfies ExportedHandler<Env>;
