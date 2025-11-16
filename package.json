@@ -1,0 +1,26 @@
+{
+	"name": "gugubot",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"typescript": "^5.5.2",
+		"wrangler": "^4.24.0"
+	},
+	"dependencies": {
+		"@grammyjs/storage-cloudflare": "^2.4.2",
+		"@hono-dev/auth-github": "^0.0.1",
+		"file-type": "^21.1.0",
+		"grammy": "^1.38.3",
+		"hono": "^4.8.4",
+		"iconv-lite": "^0.6.3",
+		"jimp": "^1.6.0",
+		"node-emoji": "^2.2.0",
+		"uuid": "^13.0.0"
+	}
+}
